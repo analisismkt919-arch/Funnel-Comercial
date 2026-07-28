@@ -1,0 +1,27 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+button, input, select { font: inherit; }
+
+.bridge-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #f4f6f9;
+  color: #687386;
+  font: 13px Arial, sans-serif;
+}
+
+.bridge-loading div {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #2563eb;
+  color: white;
+  font-weight: 900;
+}
+.supabase-login{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at top right,#dbeafe,transparent 35%),#f3f6fb}.supabase-login form{width:min(430px,100%);padding:34px;border:1px solid #dbe3ee;border-radius:22px;background:#fff;box-shadow:0 24px 70px rgba(15,35,66,.14)}.login-mark{display:grid;place-items:center;width:64px;height:42px;border-radius:12px;background:#0f2c57;color:#fff;font-weight:900}.supabase-login form>span{display:block;margin-top:16px;color:#2563eb;font-size:11px;font-weight:800;text-transform:uppercase}.supabase-login h1{margin:7px 0 24px;color:#102b57}.supabase-login label{display:flex;flex-direction:column;gap:6px;margin:13px 0;color:#52657f;font-size:11px;font-weight:700}.supabase-login input{height:44px;padding:0 12px;border:1px solid #cbd5e1;border-radius:10px}.supabase-login button{width:100%;height:45px;margin-top:14px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-weight:800;cursor:pointer}.supabase-login p{padding:10px;border-radius:8px;background:#fef2f2;color:#dc2626;font-size:11px}.supabase-login small{display:block;margin-top:14px;text-align:center;color:#94a3b8}
