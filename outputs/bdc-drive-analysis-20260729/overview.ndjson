@@ -1,0 +1,5 @@
+{"kind":"workbook","id":"wb/yvkqig","sheets":2,"tables":2}
+{"kind":"sheet","id":"ws/hyd41t","name":"Hoja1","index":0,"range":"A1:B1","address":"A1:B1","tables":1}
+{"kind":"table","sheet":"Hoja1","address":"A1:B1","rows":1,"cols":2,"values":[["Fecha cita","2025-07-15T00:00:00"]]}
+{"kind":"sheet","id":"ws/ck0uxm","name":"CITAS BDC","index":1,"range":"A1:Z7916","address":"A1:Z7916","tables":1}
+{"kind":"table","sheet":"CITAS BDC","address":"A1:Z7916","rows":7916,"cols":26,"values":[["MES","Fecha Lead","Reagendo","N° Lead","CLIENTE","ASESOR BDC","APV","Gerente","Auto","Mes cita","Fecha cita","Hora"],["ABRIL",44658,45853,null,"RUBEN MENDOZA","GUADALUPE RODRIGUEZ","ANTONIO LOPEZ","JESUS PRIETO ","TERRAIN","JULIO",45853,"4:00 PM "],["MARZO",45000,45659,"4-DZ6HAE7","JESUS PAYAN","GUADALUPE RODRIGUEZ","ERICK CRUZ","DANIEL FLORES","GROOVE","ENERO",45659,"1:30PM"],["MARZO",45016,45977,null,"LUIS TORRES","DENISSE CARRILLO","CLAUDIA PEREZ","ISMAEL FAVELA ","AVEO","NOVIEMBRE",45977,"1:00 PM"]],"valuesTruncated":true,"valuesPreviewRows":4,"valuesPreviewCols":12,"valuesPreviewAddress":"A1:L4"}
