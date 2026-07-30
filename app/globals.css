@@ -1,0 +1,251 @@
+* { box-sizing: border-box; }
+html, body { width: 100%; max-width: 100%; margin: 0; min-height: 100%; overflow-x: hidden; }
+button, input, select { font: inherit; }
+
+.bridge-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #f4f6f9;
+  color: #687386;
+  font: 13px Arial, sans-serif;
+}
+
+.bridge-loading img { width: 140px; height: 72px; object-fit: contain; }
+.supabase-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(37, 99, 235, .14), transparent 32%),
+    radial-gradient(circle at 10% 90%, rgba(15, 44, 87, .08), transparent 30%),
+    #f3f6fb;
+  font-family: Inter, Arial, sans-serif;
+}
+.supabase-login form {
+  width: min(480px, 100%);
+  padding: 34px 38px;
+  border: 1px solid #dbe3ee;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(15, 35, 66, .16);
+}
+.login-logos { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 26px; }
+.login-logos span { width: 1px; height: 42px; flex: none; background: #dbe3ee; }
+.login-cr3-logo { width: 128px; height: 64px; object-fit: contain; }
+.login-brand-logos { width: 190px; max-width: 48%; height: 56px; object-fit: contain; }
+.login-eyebrow { color: #2563eb; font-size: 11px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.supabase-login h1 { margin: 7px 0 5px; color: #102b57; font-size: 30px; }
+.login-intro { margin: 0 0 23px; color: #75839a; font-size: 13px; line-height: 1.5; }
+.supabase-login label { display: flex; flex-direction: column; gap: 7px; margin: 14px 0; color: #52657f; font-size: 11px; font-weight: 750; }
+.supabase-login input { width: 100%; height: 46px; padding: 0 13px; border: 1px solid #cbd5e1; border-radius: 11px; color: #10213d; outline: none; transition: .2s; }
+.supabase-login input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, .11); }
+.password-field { position: relative; }
+.password-field input { padding-right: 48px; }
+.supabase-login .password-toggle { position: absolute; top: 50%; right: 7px; width: 34px; height: 34px; margin: 0; padding: 0; display: grid; place-items: center; transform: translateY(-50%); border: 0; border-radius: 8px; background: transparent; color: #64748b; cursor: pointer; }
+.supabase-login .password-toggle:hover { background: #eef4ff; color: #2563eb; }
+.supabase-login .login-submit { width: 100%; height: 47px; margin-top: 15px; border: 0; border-radius: 11px; background: linear-gradient(90deg, #1d4ed8, #2f6af0); color: #fff; font-weight: 800; cursor: pointer; box-shadow: 0 8px 18px rgba(37, 99, 235, .2); }
+.supabase-login .login-submit:disabled { opacity: .65; cursor: wait; }
+.supabase-login .login-error { padding: 11px 12px; border: 1px solid #fecaca; border-radius: 9px; background: #fef2f2; color: #dc2626; font-size: 11px; line-height: 1.45; }
+.supabase-login small { display: block; margin-top: 15px; text-align: center; color: #94a3b8; font-size: 11px; }
+@media (max-width: 520px) {
+  .supabase-login form { padding: 28px 24px; }
+  .login-brand-logos { width: 160px; }
+  .login-cr3-logo { width: 105px; }
+}
+
+/* La experiencia móvil es independiente de escritorio/tableta. */
+@media (max-width: 700px) {
+  .app-root {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  .topbar {
+    width: 100vw !important;
+    position: relative !important;
+  }
+
+  .topbar-row1 {
+    width: 100% !important;
+    gap: 10px !important;
+    padding: 10px 12px 8px !important;
+  }
+
+  .topbar-row1 .brand {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+  }
+
+  .brand-logo-cr3 { height: 30px !important; max-width: 82px; }
+  .brand-logos-marcas { padding-left: 10px !important; }
+  .brand-logo-marcas { height: 25px !important; max-width: 145px; }
+
+  .import-actions {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px !important;
+  }
+
+  .import-actions .template-download-btn,
+  .import-actions .import-btn {
+    min-width: 0;
+    min-height: 40px;
+    padding: 8px 7px !important;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+    font-size: 10px !important;
+  }
+
+  .session-info {
+    width: 100% !important;
+    margin-left: 0 !important;
+    justify-content: flex-end;
+  }
+
+  .session-user { margin-right: auto; text-align: left !important; }
+  .session-name { font-size: 11px !important; }
+  .session-role { font-size: 9px !important; }
+
+  .topnav {
+    width: 100vw;
+    padding: 0 8px !important;
+    gap: 0 !important;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .topnav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex: 0 0 auto; padding: 10px 11px !important; font-size: 11px !important; }
+
+  .commercial-filter-shell {
+    width: 100vw !important;
+    padding: 8px 10px !important;
+  }
+
+  .commercial-filter-bar {
+    width: 100% !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+
+  .commercial-filter-bar label,
+  .commercial-period-filter { min-width: 0 !important; }
+  .commercial-filter-bar select { height: 40px; font-size: 11px !important; padding: 7px 8px !important; }
+  .commercial-period-filter { grid-column: 1 / -1 !important; }
+
+  .main-area {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 14px 10px 28px !important;
+  }
+
+  .main-area > *,
+  .dashboard,
+  .comparativos-view,
+  .resumen-view,
+  .bdc-view,
+  .industry-view,
+  .catalog-view {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .executive-export-toolbar {
+    width: 100%;
+    padding: 12px !important;
+  }
+
+  .executive-export-toolbar > div:last-child {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .executive-export-toolbar button { justify-content: center; }
+  .information-cutoff { width: 100%; }
+
+  .executive-hero {
+    width: 100%;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    padding: 20px 17px !important;
+    border-radius: 16px !important;
+  }
+
+  .executive-hero h1 { font-size: 23px !important; }
+  .executive-hero-metrics { width: 100%; grid-template-columns: 1fr !important; }
+  .executive-brief { width: 100%; grid-template-columns: 1fr !important; }
+  .kpi-cards-row { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 9px !important; }
+  .kpi-card { min-width: 0 !important; padding: 14px !important; }
+  .kpi-card-value { font-size: 22px !important; }
+
+  .card, .panel { max-width: 100%; border-radius: 13px !important; }
+  .card { padding: 15px !important; }
+
+  .activity-table-wrap,
+  .compliance-table-wrap,
+  .industry-table-wrap,
+  .bdc-table-wrap,
+  .catalog-table-wrap {
+    width: 100%;
+    max-width: calc(100vw - 20px);
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .industry-hero,
+  .catalog-hero,
+  .bdc-hero { padding: 19px 17px !important; border-radius: 16px !important; }
+  .industry-toolbar { grid-template-columns: 1fr !important; }
+  .industry-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .industry-grid, .bdc-summary-grid { grid-template-columns: 1fr !important; }
+
+  .bdc-tabs { width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .bdc-tabs button { flex: 0 0 auto; }
+  .bdc-filter-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 390px) {
+  .commercial-filter-bar { grid-template-columns: 1fr !important; }
+  .commercial-period-filter { grid-column: auto !important; }
+  .kpi-cards-row, .industry-kpis { grid-template-columns: 1fr !important; }
+}
+
+.turnstile-shell {
+  width: 100%;
+  min-height: 67px;
+  margin: 16px 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.turnstile-shell > div {
+  width: 100%;
+}
+
+.captcha-configuration-note {
+  margin: 16px 0 4px;
+  padding: 10px 12px;
+  border: 1px solid #f5c36a;
+  border-radius: 10px;
+  background: #fff8e8;
+  color: #8a5700;
+  font-size: 12px;
+  line-height: 1.4;
+}
