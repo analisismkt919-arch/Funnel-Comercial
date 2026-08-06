@@ -1688,6 +1688,17 @@ function Dashboard({ records, allRecords, branchNames=SUCURSALES, branchCatalog=
     if (!selectedMonth) return [];
     return applyFilters(scopedRecords.filter(r=>activePeriodMonths.includes(r.month)));
   }, [scopedRecords, selectedMonth, periodMode, activePeriodMonths, managerFilter, vendorFilter]);
+  // El resumen comparativo necesita conservar todos los meses para construir
+  // sus referencias temporal y anual, pero debe partir del mismo alcance de
+  // sucursal, gerente y APV que el resto del tablero.
+  const summaryComparisonRecords = useMemo(
+    () => applyFilters(scopedRecords),
+    [scopedRecords, selectedMonth, periodMode, managerFilter, vendorFilter, currentSeminuevosManagerByApv]
+  );
+  const summaryComparisonBranches = useMemo(
+    () => branchScope === 'todas' ? branchNames : [sucursal],
+    [branchScope, branchNames, sucursal]
+  );
   const prevRecs = useMemo(() => {
     if (!selectedMonth) return [];
     if (periodMode==='mes') return prevMonth ? applyFilters(scopedRecords.filter(r=>r.month===prevMonth)) : [];
@@ -2133,7 +2144,7 @@ function Dashboard({ records, allRecords, branchNames=SUCURSALES, branchCatalog=
           targets={targets} isSeminuevos={isSeminuevosView} />
       </section>
 
-      <SucursalesResumenTable allRecords={allRecords} branchNames={branchNames} branchCatalog={branchCatalog} selectedMonth={selectedMonth} targets={targets} periodMode={periodMode} />
+      <SucursalesResumenTable allRecords={summaryComparisonRecords} branchNames={summaryComparisonBranches} branchCatalog={branchCatalog} selectedMonth={selectedMonth} targets={targets} periodMode={periodMode} />
 
     </div>
   );
