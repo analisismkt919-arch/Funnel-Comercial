@@ -1,0 +1,10 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "crons": [
+    {
+      "path": "/api/cron/daily-record-backup",
+      "schedule": "0 8 3 * *"
+    }
+  ]
+}
