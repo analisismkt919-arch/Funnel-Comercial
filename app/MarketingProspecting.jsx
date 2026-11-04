@@ -19,6 +19,17 @@ const repairText=value=>{
 };
 const normalizedHeader=value=>identity(repairText(value));
 const field=(row,names)=>{const wanted=new Set(names.map(normalizedHeader));const match=Object.entries(row||{}).find(([name])=>wanted.has(normalizedHeader(name)));return match?.[1]??'';};
+const normalizedDate=value=>{
+  const raw=repairText(value);
+  if(!raw)return'';
+  const iso=raw.match(/^(\d{4})[-/]([01]?\d)[-/]([0-3]?\d)/);
+  if(iso)return `${iso[1]}-${String(Number(iso[2])).padStart(2,'0')}-${String(Number(iso[3])).padStart(2,'0')}`;
+  const local=raw.match(/^([0-3]?\d)[-/]([01]?\d)[-/](\d{4})/);
+  if(local)return `${local[3]}-${String(Number(local[2])).padStart(2,'0')}-${String(Number(local[1])).padStart(2,'0')}`;
+  const serial=Number(raw);
+  if(Number.isFinite(serial)&&serial>20000&&serial<80000){const date=new Date(Date.UTC(1899,11,30)+serial*86400000);return date.toISOString().slice(0,10);}
+  return'';
+};
 const hourBlock=value=>{const hour=Number(String(value||'').split(':')[0]);if(!Number.isFinite(hour))return 'Sin hora';if(hour<10)return HOUR_BLOCKS[0];if(hour<12)return HOUR_BLOCKS[1];if(hour<14)return HOUR_BLOCKS[2];if(hour<16)return HOUR_BLOCKS[3];if(hour<18)return HOUR_BLOCKS[4];return HOUR_BLOCKS[5];};
 const categoryFromMedium=value=>repairText(value).split(/→|->/)[0].trim()||'Sin clasificación';
 const detailFromMedium=value=>{const text=repairText(value),parts=text.split(/→|->/);return (parts.slice(1).join('→').trim()||text||'Sin clasificación');};
@@ -148,12 +159,13 @@ export default function MarketingProspecting({data={},persistData,inventoryData=
       const sheet=book.Sheets[book.SheetNames[0]],source=XLSX.utils.sheet_to_json(sheet,{defval:'',raw:false});
       if(!source.length)throw new Error('El archivo no contiene registros.');
       const unknownBranches=new Map(),prepared=[],invalid=[];
+      const importBatch=`${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
       source.forEach((row,index)=>{
-        const date=repairText(field(row,['Fecha','Date'])).slice(0,10),period=date.slice(0,7),rawBranch=repairText(field(row,['Sucursal','Agencia','Branch'])),mappedBranch=canonicalBranch(rawBranch);
+        const date=normalizedDate(field(row,['Fecha','Date'])),period=date.slice(0,7),rawBranch=repairText(field(row,['Sucursal','Agencia','Branch'])),mappedBranch=canonicalBranch(rawBranch);
         if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!mappedBranch){if(!mappedBranch&&rawBranch)unknownBranches.set(identity(rawBranch),rawBranch);invalid.push(index+2);return;}
         const medium=repairText(field(row,['Medio contacto','Medio de contacto','Fuente','Origen'])),phone=repairText(field(row,['Teléfono','Telefono','Celular'])),email=repairText(field(row,['Email','Correo'])),colony=repairText(field(row,['Colonia','Zona']));
         prepared.push({
-          id:`prospecting-${period}-${repairText(field(row,['ID','Id']))||index+2}`,sourceId:repairText(field(row,['ID','Id'])),period,date,
+          id:`prospecting-${period}-${importBatch}-${index+2}`,sourceId:repairText(field(row,['ID','Id'])),sourceRow:index+2,sourceFile:file.name,importBatch,period,date,
           day:repairText(field(row,['Día','Dia'])),hour:repairText(field(row,['Hora'])),hourBlock:hourBlock(field(row,['Hora'])),type:repairText(field(row,['Tipo'])),
           branch:mappedBranch,rawBranch,brand:identity(field(row,['Marca']))==='CHS'?'CHS':'TORO',area:repairText(field(row,['Área','Area']))||'Nuevo',
           receptionist:repairText(field(row,['Recibido por','Recepcionista'])),apv:repairText(field(row,['APV','Asesor','Vendedor'])),manager:repairText(field(row,['Gerente'])),
@@ -164,16 +176,17 @@ export default function MarketingProspecting({data={},persistData,inventoryData=
         });
       });
       if(unknownBranches.size)throw new Error(`No se importó el archivo. Estas sucursales no coinciden con el catálogo activo: ${[...unknownBranches.values()].join(', ')}.`);
+      if(invalid.length)throw new Error(`No se importó ninguna fila para evitar una carga parcial. Revisa la fecha y sucursal de ${invalid.length} registro(s), comenzando en las filas: ${invalid.slice(0,12).join(', ')}${invalid.length>12?'…':''}.`);
       if(!prepared.length)throw new Error('No se encontraron filas válidas con fecha y sucursal.');
       const periods=[...new Set(prepared.map(row=>row.period))],now=new Date().toISOString();
       const nextImports=[...imports.filter(item=>!periods.includes(item.period))];
-      periods.forEach(targetPeriod=>{const rows=prepared.filter(row=>row.period===targetPeriod),clients=new Set(rows.map(row=>row.__client).filter(Boolean)),phones=new Set(rows.map(row=>row.__phone).filter(Boolean));nextImports.push({id:`prospecting-import-${targetPeriod}`,period:targetPeriod,fileName:file.name,importedAt:now,sourceRows:source.filter(row=>repairText(field(row,['Fecha'])).startsWith(targetPeriod)).length,acceptedRows:rows.length,kpiRows:rows.filter(row=>row.kpi).length,nonKpiRows:rows.filter(row=>!row.kpi).length,uniqueClients:clients.size,uniquePhones:phones.size,invalidRows:invalid.length});});
+      periods.forEach(targetPeriod=>{const rows=prepared.filter(row=>row.period===targetPeriod),clients=new Set(rows.map(row=>row.__client).filter(Boolean)),phones=new Set(rows.map(row=>row.__phone).filter(Boolean));nextImports.push({id:`prospecting-import-${targetPeriod}`,period:targetPeriod,fileName:file.name,importedAt:now,sourceRows:rows.length,acceptedRows:rows.length,kpiRows:rows.filter(row=>row.kpi).length,nonKpiRows:rows.filter(row=>!row.kpi).length,uniqueClients:clients.size,uniquePhones:phones.size,invalidRows:0});});
       const {attachProspectingHashes}=await import('./prospectingConversion');
       const hashedRows=await attachProspectingHashes(prepared);
       const cleanRows=hashedRows.map(({__client,__phone,__email,...row})=>row);
       const untouched=records.filter(row=>!periods.includes(row.period));
       await persistData({...data,prospectingRecords:[...untouched,...cleanRows],prospectingImports:nextImports.sort((a,b)=>String(a.period).localeCompare(String(b.period)))});
-      notify(`${cleanRows.length.toLocaleString('es-MX')} registros importados. Se reemplazó el histórico de ${periods.map(monthName).join(', ')} sin guardar nombres, teléfonos ni correos.`);
+      notify(`${cleanRows.length.toLocaleString('es-MX')} de ${source.length.toLocaleString('es-MX')} registros importados, uno por cada renglón del archivo. Se reemplazó el histórico de ${periods.map(monthName).join(', ')} sin deduplicar ni guardar nombres, teléfonos o correos.`);
     }catch(error){notify(error?.message||'No fue posible importar el archivo de prospección.','error');}finally{setImporting(false);}
   };
 
@@ -262,7 +275,7 @@ export default function MarketingProspecting({data={},persistData,inventoryData=
 
   return <section className="prospecting-module"><style>{CSS}</style>
     <header className="prospecting-head"><div><span><Search size={14}/> INTELIGENCIA DE PROSPECCIÓN</span><h2>Origen, zona e interés comercial de los prospectos</h2><p>Lectura estadística de los registros de piso, cartera, calle, medios masivos y canales digitales.</p></div><div className="prospecting-actions">{filtered.length>0&&<><button className="secondary" onClick={exportAnalysis}><Download size={15}/> Exportar Excel</button><button className="presentation" onClick={exportPresentation} disabled={exportingPpt}>{exportingPpt?<Loader2 className="spin" size={15}/>:<FileBarChart2 size={15}/>} {exportingPpt?'Generando…':'PowerPoint ejecutivo'}</button></>}{canCapture&&<button onClick={()=>fileRef.current?.click()} disabled={importing}><Upload size={15}/>{importing?'Importando…':'Importar CSV'}</button>}<input ref={fileRef} hidden type="file" accept=".csv,.xlsx,.xls" onChange={importCsv}/></div></header>
-    <div className="prospecting-safety"><ShieldCheck size={17}/><div><strong>Histórico estadístico sin datos personales</strong><span>La importación usa nombre, teléfono y correo únicamente para calcular calidad y duplicidad. No guarda esos datos. Las sucursales TMA se homologan contra el catálogo activo de Toro.</span></div></div>
+    <div className="prospecting-safety"><ShieldCheck size={17}/><div><strong>Histórico íntegro, un registro por cada renglón</strong><span>No se eliminan ni fusionan filas repetidas. Nombre, teléfono y correo se usan únicamente para calidad y trazabilidad anónima; no se guardan visibles. Si alguna fila tiene fecha o sucursal inválida, se cancela toda la carga para evitar pérdidas parciales.</span></div></div>
     <nav className="prospecting-tabs">{sections.map(([value,label,Icon])=><button key={value} className={section===value?'active':''} onClick={()=>setSection(value)}><Icon size={14}/>{label}</button>)}</nav>
     {!filtered.length&&section!=='history'?<div className="prospecting-empty"><FileSpreadsheet size={34}/><h3>Importa el primer cierre mensual</h3><p>La plantilla esperada es compatible con la muestra de octubre: fecha, tipo, colonia, unidad, APV, gerente, medio, sucursal, marca, clasificación y Cuenta KPI.</p>{canCapture&&<button onClick={()=>fileRef.current?.click()}><Upload size={15}/> Seleccionar archivo</button>}</div>:<>
       {section==='summary'&&<div className="prospecting-stack">
@@ -280,7 +293,7 @@ export default function MarketingProspecting({data={},persistData,inventoryData=
 
       {section==='conversion'&&<div className="prospecting-stack">
         {traceableProspects<kpiRows.length&&<div className="trace-upgrade"><AlertTriangle size={18}/><div><strong>El histórico actual todavía no contiene identificadores anónimos</strong><span>Recarga una vez el archivo del mes para generar las llaves SHA‑256. No se guardarán teléfonos ni correos, y los demás meses permanecerán intactos.</span></div></div>}
-        {conversionLoading?<div className="conversion-loading"><Loader2 className="spin"/><strong>Construyendo cruces con BDC, Resultados, Ventas y Entregas…</strong></div>:conversion&&<><div className="conversion-kpis"><LinkMetric icon={Users} label="Prospectos trazables" value={traceableProspects} detail={`${pct(traceableProspects,kpiRows.length)} del KPI`}/><LinkMetric icon={Route} label="Con actividad posterior" value={conversion.matched} detail={`${conversion.matchRate.toFixed(1)}% de coincidencia`}/><LinkMetric icon={CalendarDays} label="Días a primera etapa" value={conversion.medianFirst==null?'—':conversion.medianFirst} detail="Mediana observada"/><LinkMetric icon={TrendingUp} label="Días a venta" value={conversion.medianSale==null?'—':conversion.medianSale} detail="Mediana observada"/></div><article className="prospecting-card"><header><div><span>EMBUDO TRAZABLE</span><h3>Del prospecto a la entrega</h3><p>La conversión utiliza teléfono o correo cifrado y acepta eventos posteriores hasta 365 días.</p></div></header><div className="conversion-funnel">{conversion.stageRows.map((row,index)=><article key={row.stage}><span>{row.label}</span><strong>{row.value}</strong><small>{index?`${row.stepRate.toFixed(1)}% de etapa anterior`:'Base trazable seleccionada'}</small><i><b style={{width:`${Math.max(3,row.rate)}%`}}/></i></article>)}</div></article><div className="prospecting-grid two"><ConversionTable title="Conversión por medio" rows={conversion.byMedium}/><ConversionTable title="Conversión por sucursal" rows={conversion.byBranch}/></div></>}
+        {conversionLoading?<div className="conversion-loading"><Loader2 className="spin"/><strong>Construyendo cruces con BDC, Resultados, Ventas y Entregas…</strong></div>:conversion&&<><div className="conversion-kpis"><LinkMetric icon={Users} label="Registros importados" value={kpiRows.length} detail={`${traceableProspects.toLocaleString('es-MX')} con llave anónima`}/><LinkMetric icon={Route} label="Personas con actividad posterior" value={conversion.matched} detail={`${conversion.matchRate.toFixed(1)}% de personas trazables`}/><LinkMetric icon={CalendarDays} label="Días a primera etapa" value={conversion.medianFirst==null?'—':conversion.medianFirst} detail="Mediana observada"/><LinkMetric icon={TrendingUp} label="Días a venta" value={conversion.medianSale==null?'—':conversion.medianSale} detail="Mediana observada"/></div><article className="prospecting-card"><header><div><span>EMBUDO TRAZABLE</span><h3>Del registro importado a la entrega</h3><p>La primera columna conserva todos los renglones del Excel. La segunda agrupa personas mediante teléfono o correo cifrado; no elimina registros del histórico.</p></div></header><div className="conversion-funnel">{conversion.stageRows.map((row,index)=><article key={row.stage}><span>{row.label}</span><strong>{row.value}</strong><small>{index?`${row.stepRate.toFixed(1)}% de etapa anterior`:'Total del archivo y filtros'}</small><i><b style={{width:`${Math.max(3,row.rate)}%`}}/></i></article>)}</div></article><div className="prospecting-grid two"><ConversionTable title="Conversión por medio" rows={conversion.byMedium}/><ConversionTable title="Conversión por sucursal" rows={conversion.byBranch}/></div></>}
       </div>}
 
       {section==='demand'&&<div className="prospecting-stack">
