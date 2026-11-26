@@ -1,0 +1,49 @@
+/* Cabeceras y navegación compactas; los formularios y los datos no se reducen. */
+@media screen {
+  /* Evita los saltos del antiguo controlador fijo y deja fluir el scroll. */
+  .commercial-filter-shell,.industry-toolbar,.bdc-executive-filters,.bdc-campaign-filters,
+  .bdc-section-capturaapv .bdc-capture-stack>section:first-child>.bdc-panel-head {
+    position:relative!important;top:auto!important;left:auto!important;right:auto!important;
+    animation:none!important;backdrop-filter:none!important;
+  }
+  .commercial-filter-shell{padding-top:4px!important;padding-bottom:4px!important;box-shadow:none!important}
+  .main-area{padding-top:12px!important}
+  .results-module,.demo-module,.trade-module,.appraisal-module,.insurance-module,.delivery-module,
+  .inventory-module,.marketing-module,.sales-module,.sales-appointments,.trace-module,.bdc-view {gap:9px!important}
+  .results-hero,.inventory-hero,.marketing-hero,.sales-hero,.appointments-hero,.checkin-hero,.bdc-hero {
+    min-height:0!important;padding:13px 18px!important;border-radius:14px!important;gap:12px!important;
+    box-shadow:0 6px 18px rgba(15,47,99,.12)!important;
+  }
+  .results-hero h1,.inventory-hero h1,.marketing-hero h1,.sales-hero h1,.checkin-hero h1,
+  .appointments-hero h2,.bdc-hero h2{font-size:20px!important;line-height:1.2!important;margin:3px 0!important}
+  .results-hero p,.inventory-hero p,.marketing-hero p,.sales-hero p,.checkin-hero p,.appointments-hero p,.bdc-hero p{font-size:11px!important;line-height:1.35!important;margin:0!important}
+  .results-hero>div:last-child strong{font-size:14px!important}
+  .marketing-hero-kpi,.sales-hero>div:last-child,.appointments-hero>div:last-child b,.checkin-hero-stats div{padding:7px 10px!important}
+  .marketing-hero-kpi strong,.checkin-hero-stats strong,.appointments-hero>div:last-child b{font-size:16px!important;margin:2px 0!important}
+  .results-module-nav{display:flex!important;gap:6px!important;overflow-x:auto;padding-bottom:3px;scrollbar-width:thin}
+  .results-module-nav button{flex:1 0 125px!important;min-height:42px!important;padding:7px 9px!important;border-radius:10px!important;font-size:11px!important;line-height:1.25!important}
+  .results-module-nav button svg{width:15px;height:15px;flex:none}
+  .results-module-nav small{position:static!important;margin-left:auto;font-size:8px!important}
+  .gm-heading,.demo-heading,.trade-heading,.appraisal-heading,.insurance-heading,.delivery-heading,.trace-heading{
+    padding:10px 14px!important;border-radius:12px!important;gap:10px!important;
+  }
+  .gm-heading h2,.demo-heading h2,.trade-heading h2,.appraisal-heading h2,.insurance-heading h2,.delivery-heading h2,.trace-heading h2{font-size:17px!important;margin:2px 0!important;line-height:1.2!important}
+  .gm-heading p,.demo-heading p,.trade-heading p,.appraisal-heading p,.insurance-heading p,.delivery-heading p,.trace-heading p{font-size:10px!important;line-height:1.3!important;margin:0!important}
+  .gm-actions button,.demo-actions button,.trade-actions button,.appraisal-actions button,.delivery-actions button,.insurance-heading button,.trace-export button{padding:7px 10px!important;min-height:34px;font-size:11px!important}
+  .gm-tabs,.demo-tabs,.trade-tabs,.appraisal-tabs,.insurance-tabs,.delivery-tabs,.sales-tabs,.marketing-tabs,.appointments-tabs,.checkin-tabs,.bdc-tabs{
+    display:flex!important;gap:4px!important;max-width:100%;overflow-x:auto;padding:4px!important;margin:0!important;scrollbar-width:thin;
+  }
+  .gm-tabs button,.demo-tabs button,.trade-tabs button,.appraisal-tabs button,.insurance-tabs button,.delivery-tabs button,.sales-tabs button,.marketing-tabs button,.appointments-tabs button,.checkin-tabs button,.bdc-tabs button{
+    flex:1 0 auto!important;min-height:32px;padding:6px 10px!important;font-size:11px!important;line-height:1.25!important;white-space:nowrap;
+  }
+  .appointments-controller{margin:0!important;padding:8px 10px!important}
+  .appointments-filter-grid{gap:6px!important}
+  .appointments-filter-grid select,.appointments-filter-grid .branch-multi-trigger,.appointments-period>div{height:34px!important}
+  .executive-export-toolbar,.bdc-export-toolbar{padding:8px 12px!important}
+  @media(max-width:700px){
+    .results-hero,.inventory-hero,.marketing-hero,.sales-hero,.appointments-hero,.checkin-hero,.bdc-hero{padding:12px 14px!important}
+    .results-module-nav button{flex-basis:140px!important}
+    .gm-heading,.demo-heading,.trade-heading,.appraisal-heading,.insurance-heading,.delivery-heading,.trace-heading{gap:8px!important}
+    .gm-actions,.demo-actions,.trade-actions,.appraisal-actions,.delivery-actions{flex-wrap:wrap}
+  }
+}
